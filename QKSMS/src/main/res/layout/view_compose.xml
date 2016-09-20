@@ -130,6 +130,13 @@
 
     </RelativeLayout>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/mentions_list"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:visibility="gone" />
+
+
     <LinearLayout
         android:id="@+id/attachment_panel"
         android:layout_width="match_parent"

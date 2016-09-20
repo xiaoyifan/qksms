@@ -23,7 +23,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -40,6 +42,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.github.lzyzsd.circleprogress.DonutProgress;
+import com.linkedin.android.spyglass.suggestions.SuggestionsResult;
+import com.linkedin.android.spyglass.suggestions.interfaces.SuggestionsResultListener;
+import com.linkedin.android.spyglass.suggestions.interfaces.SuggestionsVisibilityManager;
+import com.linkedin.android.spyglass.tokenization.QueryToken;
+import com.linkedin.android.spyglass.tokenization.impl.WordTokenizer;
+import com.linkedin.android.spyglass.tokenization.interfaces.QueryTokenReceiver;
 import com.linkedin.android.spyglass.ui.MentionsEditText;
 import com.moez.QKSMS.common.LiveViewManager;
 import com.moez.QKSMS.enums.QKPreference;
@@ -69,13 +77,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
-public class ComposeView extends LinearLayout implements View.OnClickListener {
+public class ComposeView extends LinearLayout implements View.OnClickListener, QueryTokenReceiver, SuggestionsResultListener, SuggestionsVisibilityManager {
     public final static String TAG = "ComposeView";
 
     private final String KEY_DELAYED_INFO_DIALOG_SHOWN = "delayed_info_dialog_shown";
 
     private final int ANIMATION_DURATION = 300;
+
 
     public interface OnSendListener {
         void onSend(String[] addresses, String body);
@@ -106,6 +116,7 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
 
     // Views
     private MentionsEditText mReplyText;
+    private RecyclerView mSuggestionRecyclerView;
     private FrameLayout mButton;
     private DonutProgress mProgress;
     private ImageView mButtonBackground;
@@ -165,6 +176,7 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
 
         // Get references to the views
         mReplyText = (MentionsEditText) findViewById(R.id.compose_reply_text);
+        mSuggestionRecyclerView = (RecyclerView)findViewById(R.id.suggestions_list);
         mButton = (FrameLayout) findViewById(R.id.compose_button);
         mProgress = (DonutProgress) findViewById(R.id.progress);
         mButtonBackground = (ImageView) findViewById(R.id.compose_button_background);
@@ -177,6 +189,10 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
         mAttachmentLayout = (FrameLayout) findViewById(R.id.attachment);
         mAttachment = (AttachmentImageView) findViewById(R.id.compose_attachment);
         mCancel = (ImageButton) findViewById(R.id.cancel);
+
+        mReplyText.setTokenizer(new WordTokenizer());
+        mReplyText.setQueryTokenReceiver(this);
+        mReplyText.setSuggestionsVisibilityManager(this);
 
         mButton.setOnClickListener(this);
         mAttach.setOnClickListener(this);
@@ -992,4 +1008,30 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
                         ThemeManager.getTextOnColorPrimary() : ThemeManager.getTextOnColorSecondary(),
                 PorterDuff.Mode.SRC_ATOP);
     }
+
+
+
+
+
+    //mentions methods
+    @Override
+    public List<String> onQueryReceived(@NonNull QueryToken queryToken) {
+        return null;
+    }
+
+    @Override
+    public void onReceiveSuggestionsResult(@NonNull SuggestionsResult result, @NonNull String bucket) {
+
+    }
+
+    @Override
+    public void displaySuggestions(boolean display) {
+
+    }
+
+    @Override
+    public boolean isDisplayingSuggestions() {
+        return false;
+    }
+
 }
