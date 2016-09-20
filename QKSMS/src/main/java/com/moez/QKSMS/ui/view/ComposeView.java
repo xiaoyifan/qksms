@@ -24,8 +24,10 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -38,6 +40,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.github.lzyzsd.circleprogress.DonutProgress;
+import com.linkedin.android.spyglass.ui.MentionsEditText;
 import com.moez.QKSMS.common.LiveViewManager;
 import com.moez.QKSMS.enums.QKPreference;
 import com.moez.QKSMS.mmssms.Transaction;
@@ -102,7 +105,7 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
     private String mLabel;
 
     // Views
-    private QKEditText mReplyText;
+    private MentionsEditText mReplyText;
     private FrameLayout mButton;
     private DonutProgress mProgress;
     private ImageView mButtonBackground;
@@ -161,7 +164,7 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
         super.onFinishInflate();
 
         // Get references to the views
-        mReplyText = (QKEditText) findViewById(R.id.compose_reply_text);
+        mReplyText = (MentionsEditText) findViewById(R.id.compose_reply_text);
         mButton = (FrameLayout) findViewById(R.id.compose_button);
         mProgress = (DonutProgress) findViewById(R.id.progress);
         mButtonBackground = (ImageView) findViewById(R.id.compose_button_background);
@@ -226,10 +229,22 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
                 break;
         }
 
-        mReplyText.setTextChangedListener(new QKEditText.TextChangedListener() {
+
+
+        mReplyText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onTextChanged(CharSequence s) {
-                int length = s.length();
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                int length = editable.length();
 
                 updateButtonState(length);
 
